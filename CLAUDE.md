@@ -62,7 +62,8 @@ lake; delete the local `lake/` and rerun, or expect one failed run.
 
 ## Not done yet
 
-- No git repo, nothing committed. Ask Rudy before `gh repo create` (new public repo).
+- Live since 2026-11-15 at https://mattrudy13.github.io/bank-atlas/ (repo `mattrudy13/bank-atlas`, Pages from
+  `main` /, tag v0.1). Site data is the first local run's output until the weekly refresh exists.
 - R2: Rudy creates bucket `bank-atlas-lake` + a bucket-only token, saves `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
   `R2_SECRET_ACCESS_KEY` as GitHub secrets and in `.env`. The R2 code path is written but untested.
 - Weekly GitHub Actions refresh (model: `uva-records/.github/workflows/refresh.yml`).
