@@ -32,6 +32,10 @@ https://claude.ai/artifact/M2PPVRL2C4QG7pU3KWDrgp
   Mergers go back further; deposits (SOD) go back to 1994.
 - `opened_date` for old offices is often the founding bank's date (e.g. 1867); the sheet says so before 1960.
 - Branch names are FDIC's all-caps; left as-is (auto-capitalising mangles "JANAF").
+- FDIC filed Rocky Mount and Appomattox (VA) under Franklin city, and Jacksonville (NC) under Camden County.
+  `MISCODED_PLACES` in `config.py` drops those events and deposit rows in silver (Rudy, 2026-11-15); they were
+  half of Franklin's 2001–04 deposits. The FDIC totals check adds them back before comparing. Known, left in:
+  Greenbrier (Chesapeake) events filed under Norfolk, a Hampton branch under Virginia Beach.
 - History's `PSTALP` is the bank's HQ state; the branch's place is in the `OFF_*` fields.
 
 ## Files
@@ -41,7 +45,7 @@ https://claude.ai/artifact/M2PPVRL2C4QG7pU3KWDrgp
 - Map: Leaflet 1.9.4 from cdnjs (pinned, SRI). Tiles: OpenStreetMap standard, grayed with a CSS filter
   (CARTO now needs an API key). Bank colors by CERT in `NAMED` (app.js); every other bank is gray.
 - `site-data/*.json` (gold, written by the pipeline only when every check passes):
-  `branches_now`, `branch_events` (647 rows, 2000 on), `branch_events_by_year`, `deposit_share_by_year`
+  `branches_now`, `branch_events` (642 rows, 2000 on), `branch_events_by_year`, `deposit_share_by_year`
   (844 KB raw, ~75 KB gzipped by GitHub Pages), `pipeline_status`. Each is `{"meta", "data"}`; meta carries
   `localities`, `fdic_data_as_of`, `no_callout_certs`.
 - `pipeline/`: `fetch.py` (paged API), `silver.py` (SCD2 dims, facts), `gold.py`, `checks.py` (9 checks),
@@ -52,7 +56,7 @@ https://claude.ai/artifact/M2PPVRL2C4QG7pU3KWDrgp
     .venv/bin/python -m pipeline.run               # full run (~14 s)
     .venv/bin/python -m pipeline.run --skip-fetch  # rebuild silver/gold from bronze (<1 s)
     .venv/bin/python -m pipeline.run --housekeeping  # OPTIMIZE + VACUUM
-    .venv/bin/python -m pytest -q                  # 13 tests, no network
+    .venv/bin/python -m pytest -q                  # 14 tests, no network
 
 Local preview: the `github-root` server in `~/Desktop/coding/GitHub/.claude/launch.json`, then
 http://localhost:8765/bank-atlas/.

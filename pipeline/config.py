@@ -84,6 +84,18 @@ METRO_COUNTIES = {
     "37073": "Gates County, NC",
 }
 
+# Towns outside the metro that FDIC filed under a metro county's code by
+# mistake, keyed by (county_fips, city in capitals). Silver leaves out every
+# history event and deposit row that matches (Rudy, 2026-11-15). Keyed on the
+# place, not on event or office IDs, because the deposit rows come from more
+# offices than the events do; the coordinates confirm each (Rocky Mount sits
+# at about 37.0, -79.9, far west of Franklin city).
+MISCODED_PLACES = {
+    ("51620", "ROCKY MOUNT"): "Rocky Mount, VA is in Franklin County (51067), not Franklin city",
+    ("51620", "APPOMATTOX"): "Appomattox, VA is in Appomattox County (51011), not Franklin city",
+    ("37029", "JACKSONVILLE"): "Jacksonville, NC is in Onslow County (37133), not Camden County",
+}
+
 FIRST_YEAR = 1994  # first Summary of Deposits year; gold starts here
 
 # FDIC's history only records branch openings (711), closings (721) and moves

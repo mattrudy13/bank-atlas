@@ -233,6 +233,13 @@ def _jsonable(value, column: str):
     return value
 
 
+MISCODED_NOTE = (
+    "Left out: towns outside the metro that FDIC filed under a metro county by mistake ("
+    + "; ".join(config.MISCODED_PLACES.values())
+    + ")."
+)
+
+
 def file_meta(con, run_ts: datetime, name: str, sources: dict) -> dict:
     """Metadata at the top of every gold JSON file."""
     localities = con.execute(
@@ -258,18 +265,20 @@ def file_meta(con, run_ts: datetime, name: str, sources: dict) -> dict:
             f"Starts in {config.EVENTS_FIRST_YEAR}, the first full year after FDIC began recording "
             f"branch openings, closings and moves ({config.OPEN_CLOSE_TRACKED_FROM}). changed_hands "
             "counts branches moved to another bank by merger (713) or sale (722), not as a "
-            "closing plus an opening. area 'Metro' rows have county_fips null."
+            "closing plus an opening. area 'Metro' rows have county_fips null. " + MISCODED_NOTE
         )
     if name == "branch_events":
         meta["first_year"] = config.EVENTS_FIRST_YEAR
         meta["notes"] = (
             "One row per metro branch opening (FDIC code 711) or closing (721), oldest first. "
             "Mergers, sales and moves are not listed. bank_name is the bank's name on the event "
-            "date; branch_name is as FDIC records it (often capitals)."
+            "date; branch_name is as FDIC records it (often capitals). " + MISCODED_NOTE
         )
     if name == "deposit_share_by_year":
         meta["units"] = {"deposits_thousands": "US dollars, thousands, as of June 30", "share_pct": "percent"}
-        meta["notes"] = "Share of each area's deposits by bank charter (CERT), named as of that year."
+        meta["notes"] = (
+            "Share of each area's deposits by bank charter (CERT), named as of that year. " + MISCODED_NOTE
+        )
     return meta
 
 

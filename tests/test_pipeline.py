@@ -124,6 +124,27 @@ def test_event_list_has_only_openings_and_closings(lake_dir, source):
     assert any(t["table_name"] == "branch_events" and t["row_count"] == 2 for t in status["tables"])
 
 
+def test_miscoded_places_are_left_out(lake_dir, source):
+    """Rocky Mount VA filed under Franklin city (51620) stays out of events and deposits.
+
+    FDIC's control totals still include its deposits, so the totals check
+    has to add them back and pass.
+    """
+    assert run.run(source=source, run_ts=RUN_1, log=quiet) == 0
+
+    assert "e-2001-rocky-mount-open" not in {r["event_id"] for r in rows("silver", "fact_branch_event")}
+    assert "2026_9846_90" not in {r["sod_id"] for r in rows("silver", "fact_branch_deposits_year")}
+    by_year = {(r["year"], r["area"]): r for r in rows("gold", "branch_events_by_year")}
+    assert by_year[(2001, "Franklin")]["opened"] == by_year[(2001, "Metro")]["opened"] == 0
+    franklin = [r for r in rows("gold", "deposit_share_by_year") if r["area"] == "Franklin"]
+    assert franklin == []
+
+    status = site_json("pipeline_status")
+    totals = next(c for c in status["checks"] if c["name"] == "metro deposits match FDIC totals")
+    assert totals["passed"] and "1 mis-coded" in totals["detail"]
+    assert "Rocky Mount" in site_json("deposit_share_by_year")["meta"]["notes"]
+
+
 def test_event_list_check_catches_mismatch():
     con = lake.connect()
     con.register("gold_branch_events", pa.table({"year": [2021], "event": ["closed"]}))

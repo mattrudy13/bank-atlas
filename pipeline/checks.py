@@ -13,7 +13,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import date
 
-from pipeline import config
+from pipeline import config, lake, silver
 
 
 @dataclass
@@ -159,7 +159,11 @@ def sod_totals_match_fdic(con) -> CheckResult:
 
     Like a control total at the bank: FDIC adds up the same counties
     server-side, so any row we lose or double counts makes a mismatch.
+    FDIC's sums include the mis-coded rows silver sets aside
+    (config.MISCODED_PLACES), so those are added back first.
     """
+    silver.register_lookups(con)
+    con.register("set_aside", lake.query(con, silver.MISCODED_DEPOSITS_BY_YEAR))
     mismatches = con.execute(
         """
         WITH ours AS (
@@ -170,6 +174,15 @@ def sod_totals_match_fdic(con) -> CheckResult:
             FROM gold_deposit_share_by_year
             WHERE area = 'Metro'
             GROUP BY year
+        ),
+        ours_plus_set_aside AS (
+            SELECT
+                o.year,
+                o.deposits + COALESCE(a.deposits, 0) AS deposits,
+                o.branches + COALESCE(a.branches, 0) AS branches
+            FROM ours AS o
+            LEFT JOIN set_aside AS a
+                ON a.year = o.year
         ),
         fdic AS (
             SELECT
@@ -182,7 +195,7 @@ def sod_totals_match_fdic(con) -> CheckResult:
         SELECT
             COALESCE(o.year, f.year) AS year,
             o.deposits, f.deposits, o.branches, f.branches
-        FROM ours AS o
+        FROM ours_plus_set_aside AS o
         FULL OUTER JOIN fdic AS f
             ON f.year = o.year
         WHERE o.deposits IS DISTINCT FROM f.deposits
@@ -192,13 +205,21 @@ def sod_totals_match_fdic(con) -> CheckResult:
         {"first_year": config.FIRST_YEAR},
     ).fetchall()
     years = con.execute("SELECT COUNT(*) FROM bronze_sod_fdic_totals").fetchall()[0][0]
-    detail = (
-        f"all {years} years match FDIC's totals"
-        if not mismatches
-        else "; ".join(
+    set_aside_rows, set_aside_deposits = con.execute(
+        "SELECT COALESCE(SUM(branches), 0), COALESCE(SUM(deposits), 0) FROM set_aside"
+    ).fetchall()[0]
+    con.unregister("set_aside")
+    if mismatches:
+        detail = "; ".join(
             f"{y}: ours ${od}k/{ob} branches vs FDIC ${fd}k/{fb}" for y, od, fd, ob, fb in mismatches[:5]
         )
-    )
+    else:
+        detail = f"all {years} years match FDIC's totals"
+        if set_aside_rows:
+            detail += (
+                f" once the {set_aside_rows} mis-coded out-of-area rows "
+                f"(${set_aside_deposits:,}k) are added back"
+            )
     return CheckResult("metro deposits match FDIC totals", not mismatches, detail)
 
 

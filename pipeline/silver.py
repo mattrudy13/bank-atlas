@@ -36,6 +36,16 @@ def ts_literal(ts: datetime) -> str:
     return f"CAST('{ts.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}' AS TIMESTAMP)"
 
 
+def is_miscoded(county_fips: str, city: str) -> str:
+    """SQL that's true when a row's county and city are in config.MISCODED_PLACES."""
+    return f"""EXISTS (
+            SELECT 1
+            FROM miscoded_places AS m
+            WHERE m.county_fips = {county_fips}
+              AND m.city = UPPER(TRIM({city}))
+        )"""
+
+
 # --- Snapshots (latest bronze, typed) -------------------------------------------
 
 DIM_BANK_COLUMNS = [
@@ -173,7 +183,9 @@ SELECT
     event_id,
     {", ".join(FACT_EVENT_COLUMNS)},
     {row_hash(FACT_EVENT_COLUMNS)} AS row_hash
-FROM classified
+FROM classified AS c
+-- Out-of-area towns FDIC filed under a metro county (config.MISCODED_PLACES).
+WHERE NOT {is_miscoded("c.county_fips", "c.city")}
 QUALIFY ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY processed_date DESC) = 1
 """
 
@@ -184,7 +196,7 @@ FACT_DEPOSIT_COLUMNS = [
     "longitude",
 ]
 
-FACT_BRANCH_DEPOSITS_YEAR = f"""
+SOD_TYPED = f"""
 -- Summary of Deposits: each branch's deposits on June 30 of each year,
 -- reported by the bank charter that held the branch that day.
 WITH typed AS (
@@ -210,13 +222,35 @@ WITH typed AS (
         ROUND(NULLIF(TRY_CAST(SIMS_LATITUDE AS DOUBLE), 0), 6) AS latitude,
         ROUND(NULLIF(TRY_CAST(SIMS_LONGITUDE AS DOUBLE), 0), 6) AS longitude
     FROM bronze_sod
+),
+flagged AS (
+    -- Out-of-area towns FDIC filed under a metro county (config.MISCODED_PLACES).
+    -- Aliased: a bare county_fips inside the EXISTS would mean m.county_fips.
+    SELECT t.*, {is_miscoded("t.county_fips", "t.city")} AS miscoded
+    FROM typed AS t
 )
+"""
+
+FACT_BRANCH_DEPOSITS_YEAR = f"""{SOD_TYPED}
 SELECT
     sod_id,
     {", ".join(FACT_DEPOSIT_COLUMNS)},
     {row_hash(FACT_DEPOSIT_COLUMNS)} AS row_hash
-FROM typed
+FROM flagged
+WHERE NOT miscoded
 QUALIFY ROW_NUMBER() OVER (PARTITION BY sod_id ORDER BY sod_id) = 1
+"""
+
+# What silver set aside each year. FDIC's control totals still include these
+# rows, so the totals check adds them back before comparing.
+MISCODED_DEPOSITS_BY_YEAR = f"""{SOD_TYPED}
+SELECT
+    year,
+    COUNT(*) AS branches,
+    CAST(SUM(deposits_thousands) AS BIGINT) AS deposits
+FROM flagged
+WHERE miscoded
+GROUP BY year
 """
 
 
@@ -343,11 +377,8 @@ def metro_county_table(con) -> pa.Table:
     )
 
 
-def build(con, run_ts: datetime, run_id: str, log=print) -> dict:
-    """Rebuild every silver table from the latest bronze snapshots."""
-    for name in ("institutions", "locations", "history", "sod"):
-        if not lake.register_latest_bronze(con, name):
-            raise RuntimeError(f"bronze.{name} doesn't exist yet; run without --skip-fetch first")
+def register_lookups(con) -> None:
+    """The config lookups the silver queries join to."""
     con.register(
         "event_types",
         pa.table({
@@ -355,6 +386,21 @@ def build(con, run_ts: datetime, run_id: str, log=print) -> dict:
             "event_type": list(config.EVENT_TYPES.values()),
         }),
     )
+    con.register(
+        "miscoded_places",
+        pa.table({
+            "county_fips": [fips for fips, _ in config.MISCODED_PLACES],
+            "city": [city for _, city in config.MISCODED_PLACES],
+        }),
+    )
+
+
+def build(con, run_ts: datetime, run_id: str, log=print) -> dict:
+    """Rebuild every silver table from the latest bronze snapshots."""
+    for name in ("institutions", "locations", "history", "sod"):
+        if not lake.register_latest_bronze(con, name):
+            raise RuntimeError(f"bronze.{name} doesn't exist yet; run without --skip-fetch first")
+    register_lookups(con)
 
     results = {}
     lake.write("silver", "dim_metro_county", metro_county_table(con), mode="overwrite", run_id=run_id)
