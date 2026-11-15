@@ -1,0 +1,14 @@
+# Local Delta lake (the real one lives in Cloudflare R2 once it's set up)
+/lake/
+
+# Secrets for R2; see .env.example for the names
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# macOS
+.DS_Store
