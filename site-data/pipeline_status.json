@@ -1,0 +1,217 @@
+{
+  "run_id": "20261115T173616Z",
+  "started_at": "2026-11-15T17:36:16.465406+00:00",
+  "finished_at": "2026-11-15T17:36:17.194095+00:00",
+  "duration_seconds": 0.7,
+  "status": "passed",
+  "storage": "local",
+  "metro": {
+    "cbsa": "47260",
+    "name": "Virginia Beach-Chesapeake-Norfolk, VA-NC"
+  },
+  "fdic_sources": [
+    {
+      "endpoint": "institutions",
+      "index_name": "institutions_20261113100007",
+      "created_at": "2026-11-13T12:55:01Z",
+      "rows": 27835
+    },
+    {
+      "endpoint": "locations",
+      "index_name": "locations_20261113100007",
+      "created_at": "2026-11-13T12:44:09Z",
+      "rows": 78005
+    },
+    {
+      "endpoint": "history",
+      "index_name": "history_20261113100007",
+      "created_at": "2026-11-13T11:21:08Z",
+      "rows": 2298
+    },
+    {
+      "endpoint": "sod",
+      "index_name": "sod_1789738734553",
+      "created_at": "2026-09-18T13:38:54Z",
+      "rows": 12016
+    },
+    {
+      "endpoint": "sod_fdic_totals",
+      "index_name": "sod_1789738734553",
+      "created_at": "2026-09-18T13:38:54Z",
+      "rows": 33
+    }
+  ],
+  "tables": [
+    {
+      "layer": "bronze",
+      "table_name": "institutions",
+      "row_count": 27835,
+      "total_rows": 55670,
+      "delta_version": 1
+    },
+    {
+      "layer": "bronze",
+      "table_name": "locations",
+      "row_count": 78005,
+      "total_rows": 156010,
+      "delta_version": 1
+    },
+    {
+      "layer": "bronze",
+      "table_name": "history",
+      "row_count": 2298,
+      "total_rows": 4596,
+      "delta_version": 1
+    },
+    {
+      "layer": "bronze",
+      "table_name": "sod",
+      "row_count": 12016,
+      "total_rows": 24032,
+      "delta_version": 1
+    },
+    {
+      "layer": "bronze",
+      "table_name": "sod_fdic_totals",
+      "row_count": 33,
+      "total_rows": 66,
+      "delta_version": 1
+    },
+    {
+      "layer": "silver",
+      "table_name": "dim_metro_county",
+      "row_count": 19,
+      "total_rows": 19,
+      "delta_version": 2
+    },
+    {
+      "layer": "silver",
+      "table_name": "dim_bank",
+      "row_count": 27835,
+      "total_rows": 27835,
+      "delta_version": 1
+    },
+    {
+      "layer": "silver",
+      "table_name": "dim_branch",
+      "row_count": 78005,
+      "total_rows": 78005,
+      "delta_version": 1
+    },
+    {
+      "layer": "silver",
+      "table_name": "fact_branch_event",
+      "row_count": 2291,
+      "total_rows": 2291,
+      "delta_version": 1
+    },
+    {
+      "layer": "silver",
+      "table_name": "fact_branch_deposits_year",
+      "row_count": 12016,
+      "total_rows": 12016,
+      "delta_version": 1
+    },
+    {
+      "layer": "gold",
+      "table_name": "branches_now",
+      "row_count": 235,
+      "total_rows": 235,
+      "delta_version": 2
+    },
+    {
+      "layer": "gold",
+      "table_name": "branch_events_by_year",
+      "row_count": 540,
+      "total_rows": 540,
+      "delta_version": 2
+    },
+    {
+      "layer": "gold",
+      "table_name": "branch_events",
+      "row_count": 647,
+      "total_rows": 647,
+      "delta_version": 1
+    },
+    {
+      "layer": "gold",
+      "table_name": "deposit_share_by_year",
+      "row_count": 5517,
+      "total_rows": 5517,
+      "delta_version": 2
+    }
+  ],
+  "checks": [
+    {
+      "name": "row counts vs last run (bronze)",
+      "passed": true,
+      "detail": "5 tables within \u00b110% of run 20261115T173553Z"
+    },
+    {
+      "name": "row counts vs last run (silver, gold)",
+      "passed": true,
+      "detail": "9 tables within \u00b110% of run 20261115T173553Z"
+    },
+    {
+      "name": "unique keys",
+      "passed": true,
+      "detail": "11 keys unique"
+    },
+    {
+      "name": "branches have coordinates",
+      "passed": true,
+      "detail": "every metro branch has coordinates inside the metro"
+    },
+    {
+      "name": "no future dates",
+      "passed": true,
+      "detail": "nothing after 2026-11-15"
+    },
+    {
+      "name": "metro deposits match FDIC totals",
+      "passed": true,
+      "detail": "all 33 years match FDIC's totals"
+    },
+    {
+      "name": "branch count matches FDIC's CBSA count",
+      "passed": true,
+      "detail": "235 branches in gold, FDIC lists 235 under CBSA 47260"
+    },
+    {
+      "name": "deposit shares sum to 100%",
+      "passed": true,
+      "detail": "660 year-area groups sum to 100%"
+    },
+    {
+      "name": "event list matches yearly counts",
+      "passed": true,
+      "detail": "647 listed openings and closings match the metro's yearly counts"
+    }
+  ],
+  "no_callout_certs": [
+    35095
+  ],
+  "recent_runs": [
+    {
+      "run_id": "20261115T173616Z",
+      "started_at": "2026-11-15T17:36:16Z",
+      "duration_seconds": 0.7,
+      "status": "passed",
+      "failed_checks": []
+    },
+    {
+      "run_id": "20261115T173553Z",
+      "started_at": "2026-11-15T17:35:53Z",
+      "duration_seconds": 13.9,
+      "status": "passed",
+      "failed_checks": []
+    },
+    {
+      "run_id": "20261115T170843Z",
+      "started_at": "2026-11-15T17:08:43Z",
+      "duration_seconds": 13.1,
+      "status": "passed",
+      "failed_checks": []
+    }
+  ]
+}
