@@ -53,22 +53,37 @@ https://claude.ai/artifact/M2PPVRL2C4QG7pU3KWDrgp
 
 ## Run
 
-    .venv/bin/python -m pipeline.run               # full run (~14 s)
-    .venv/bin/python -m pipeline.run --skip-fetch  # rebuild silver/gold from bronze (<1 s)
+    .venv/bin/python -m pipeline.run               # full run (~95 s against R2 from the Mac)
+    .venv/bin/python -m pipeline.run --skip-fetch  # rebuild silver/gold from bronze
     .venv/bin/python -m pipeline.run --housekeeping  # OPTIMIZE + VACUUM
-    .venv/bin/python -m pytest -q                  # 14 tests, no network
+    .venv/bin/python -m pytest -q                  # 14 tests, no network, always a temp local lake
+
+`.env` (gitignored) sets `LAKE_URI=s3://bank-atlas-lake`, so local runs write to the same R2 lake as the
+weekly job. Delta on R2 has no lock service: never run locally while the Actions job runs (Mondays ~6 AM ET).
+For a throwaway local lake: `LAKE_URI=lake .venv/bin/python -m pipeline.run` (the environment beats `.env`).
+The old `lake/` folder holds the pre-R2 runs and is no longer used.
 
 Local preview: the `github-root` server in `~/Desktop/coding/GitHub/.claude/launch.json`, then
 http://localhost:8765/bank-atlas/.
 
-The row-count check (±10% vs last run) blocks a deliberate change in a gold table's size once on an existing
-lake; delete the local `lake/` and rerun, or expect one failed run.
+The row-count check compares with the last run that *passed*, so a deliberate size change of more than ±10%
+keeps failing every run until one passes with a raised `ROW_COUNT_TOLERANCE_PCT` (config.py); put it back after.
+
+## Live, R2 and the weekly refresh (since 2026-11-15)
+
+- https://mattrudy13.github.io/bank-atlas/ (repo `mattrudy13/bank-atlas`, Pages from `main` /, tag v0.1).
+- Lake: R2 bucket `bank-atlas-lake` in Rudy's Cloudflare account (Standard class, free tier), with an access key
+  limited to that bucket (Object Read & Write). `LAKE_URI`, `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID` and
+  `R2_SECRET_ACCESS_KEY` are repo secrets and in `.env`; Rudy set them, Claude never handles the values.
+- `.github/workflows/refresh.yml`: Mondays 11:00 UTC (6 AM ET, 7 AM in daylight time) and by hand. Tests, then
+  the pipeline against R2, then commits `site-data/` as github-actions[bot]. Secrets go only to the pipeline
+  steps. A failed check fails the run (GitHub emails Rudy) and site-data stays at the last good run. The
+  first Monday of each month also runs `--housekeeping`; a manual run has a "housekeeping" box.
+- VACUUM keeps 7 days (`VACUUM_RETENTION_HOURS` in `run.py`), so after housekeeping, time travel reaches back
+  about a week.
 
 ## Not done yet
 
-- Live since 2026-11-15 at https://mattrudy13.github.io/bank-atlas/ (repo `mattrudy13/bank-atlas`, Pages from
-  `main` /, tag v0.1). Site data is the first local run's output until the weekly refresh exists.
-- R2: Rudy creates bucket `bank-atlas-lake` + a bucket-only token, saves `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`,
-  `R2_SECRET_ACCESS_KEY` as GitHub secrets and in `.env`. The R2 code path is written but untested.
-- Weekly GitHub Actions refresh (model: `uva-records/.github/workflows/refresh.yml`).
-- Bronze appends a full snapshot every run (~8 MB/week, ~400 MB/year); fine on R2's 10 GB free tier for now.
+- Bronze appends a full snapshot every run (19 MB per run on R2, ~1 GB/year); the 10 GB free tier lasts years.
+- A failed run doesn't rewrite `pipeline_status.json`, so the Pipeline page only shows it (in recent runs)
+  after the next run that passes.
