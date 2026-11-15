@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bank Atlas · Hampton Roads</title>
+<meta name="description" content="Every bank branch in the Virginia Beach metro from FDIC data: where they are, who opened and closed them, and who holds local deposits.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@500;700&family=Red+Hat+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<header class="form-head">
+  <div><div class="label">Project</div><a class="brand" href="./">BANK ATLAS</a></div>
+  <div class="cell-schedule"><div class="label">Schedule HR</div><div class="head-title">Hampton Roads branches</div></div>
+  <div class="cell-asof"><div class="label">As of</div><div class="as-of" id="asof">…</div></div>
+  <nav class="nav" aria-label="Pages"><a href="./" aria-current="page">Map</a><a href="pipeline.html">Pipeline</a></nav>
+</header>
+
+<section class="lines" id="lines" aria-label="Totals for the selected area"></section>
+
+<div class="main">
+  <section class="part map-part" aria-labelledby="p1">
+    <div class="part-head"><h2 id="p1">Part I. Branch locations</h2><span class="code">CBSA 47260</span></div>
+    <div class="chips" id="chips" role="group" aria-label="Area"></div>
+    <div id="map" role="region" aria-label="Map of bank branches"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <div class="aside">
+    <section class="part detail" id="detail" aria-labelledby="pd" aria-live="polite"></section>
+    <section class="part" aria-labelledby="pn">
+      <div class="part-head"><h2 id="pn">Notes to schedule</h2></div>
+      <ol class="notes" id="notes"></ol>
+    </section>
+  </div>
+</div>
+
+<div class="pair">
+  <section class="part" aria-labelledby="p2">
+    <div class="part-head"><h2 id="p2">Part II. Share of deposits</h2><span class="code" id="p2-area"></span></div>
+    <div class="part-body" id="banks"></div>
+  </section>
+  <section class="part" aria-labelledby="p3">
+    <div class="part-head"><h2 id="p3">Part III. Changes by year</h2><span class="code" id="p3-area"></span></div>
+    <div class="part-body" id="years"></div>
+  </section>
+</div>
+
+<footer class="foot">
+  <span>Source: FDIC BankFind. A branch that changes hands in a merger or sale is not counted as a closing or an opening.</span>
+  <a href="pipeline.html" id="foot-run">Pipeline →</a>
+</footer>
+
+</div>
+</body>
+</html>
