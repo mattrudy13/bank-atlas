@@ -1,8 +1,8 @@
 {
-  "run_id": "20261115T173616Z",
-  "started_at": "2026-11-15T17:36:16.465406+00:00",
-  "finished_at": "2026-11-15T17:36:17.194095+00:00",
-  "duration_seconds": 0.7,
+  "run_id": "20261115T192200Z",
+  "started_at": "2026-11-15T19:22:00.160988+00:00",
+  "finished_at": "2026-11-15T19:22:01.509524+00:00",
+  "duration_seconds": 1.3,
   "status": "passed",
   "storage": "local",
   "metro": {
@@ -82,7 +82,7 @@
       "table_name": "dim_metro_county",
       "row_count": 19,
       "total_rows": 19,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "silver",
@@ -101,56 +101,56 @@
     {
       "layer": "silver",
       "table_name": "fact_branch_event",
-      "row_count": 2291,
-      "total_rows": 2291,
-      "delta_version": 1
+      "row_count": 2281,
+      "total_rows": 2281,
+      "delta_version": 2
     },
     {
       "layer": "silver",
       "table_name": "fact_branch_deposits_year",
-      "row_count": 12016,
-      "total_rows": 12016,
-      "delta_version": 1
+      "row_count": 11989,
+      "total_rows": 11989,
+      "delta_version": 2
     },
     {
       "layer": "gold",
       "table_name": "branches_now",
       "row_count": 235,
       "total_rows": 235,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "gold",
       "table_name": "branch_events_by_year",
       "row_count": 540,
       "total_rows": 540,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "gold",
       "table_name": "branch_events",
-      "row_count": 647,
-      "total_rows": 647,
-      "delta_version": 1
+      "row_count": 642,
+      "total_rows": 642,
+      "delta_version": 2
     },
     {
       "layer": "gold",
       "table_name": "deposit_share_by_year",
-      "row_count": 5517,
-      "total_rows": 5517,
-      "delta_version": 2
+      "row_count": 5502,
+      "total_rows": 5502,
+      "delta_version": 3
     }
   ],
   "checks": [
     {
       "name": "row counts vs last run (bronze)",
       "passed": true,
-      "detail": "5 tables within \u00b110% of run 20261115T173553Z"
+      "detail": "5 tables within \u00b110% of run 20261115T173616Z"
     },
     {
       "name": "row counts vs last run (silver, gold)",
       "passed": true,
-      "detail": "9 tables within \u00b110% of run 20261115T173553Z"
+      "detail": "9 tables within \u00b110% of run 20261115T173616Z"
     },
     {
       "name": "unique keys",
@@ -170,7 +170,7 @@
     {
       "name": "metro deposits match FDIC totals",
       "passed": true,
-      "detail": "all 33 years match FDIC's totals"
+      "detail": "all 33 years match FDIC's totals once the 27 mis-coded out-of-area rows ($606,203k) are added back"
     },
     {
       "name": "branch count matches FDIC's CBSA count",
@@ -185,13 +185,20 @@
     {
       "name": "event list matches yearly counts",
       "passed": true,
-      "detail": "647 listed openings and closings match the metro's yearly counts"
+      "detail": "642 listed openings and closings match the metro's yearly counts"
     }
   ],
   "no_callout_certs": [
     35095
   ],
   "recent_runs": [
+    {
+      "run_id": "20261115T192200Z",
+      "started_at": "2026-11-15T19:22:00Z",
+      "duration_seconds": 1.3,
+      "status": "passed",
+      "failed_checks": []
+    },
     {
       "run_id": "20261115T173616Z",
       "started_at": "2026-11-15T17:36:16Z",
