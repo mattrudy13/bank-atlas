@@ -17,7 +17,7 @@ https://claude.ai/artifact/M2PPVRL2C4QG7pU3KWDrgp
 - **Part II:** then-and-now share table, today's top 8 banks with share in 1994 / 2006 / 2016 / latest, plus
   top-5 share, bank count and total deposits.
 - **Part III:** year strip (2000 on; opened above, closed below) plus the chosen year's events by date and bank.
-- **Pipeline page:** run report (status, 13+ tables with rows and Delta version, each check, recent runs).
+- **Pipeline page:** run report (status, 14 tables with rows and Delta version, each check, recent runs).
 - **TowneBank (CERT 35095) is in `no_callout_certs`.** It shows like any bank on the map, in
   tables and in Part III's event list (Rudy OK'd that: data rows, not callouts), but the automatic "Notes to
   schedule" never name it. If it would top a ranking, that note is skipped, not handed to the runner-up.
@@ -46,10 +46,11 @@ https://claude.ai/artifact/M2PPVRL2C4QG7pU3KWDrgp
   (CARTO now needs an API key). Bank colors by CERT in `NAMED` (app.js); every other bank is gray.
 - `site-data/*.json` (gold, written by the pipeline only when every check passes):
   `branches_now`, `branch_events` (642 rows, 2000 on), `branch_events_by_year`, `deposit_share_by_year`
-  (844 KB raw, ~75 KB gzipped by GitHub Pages), `pipeline_status`. Each is `{"meta", "data"}`; meta carries
+  (~860 KB raw, ~80 KB gzipped by GitHub Pages), `pipeline_status`. Each is `{"meta", "data"}`; meta carries
   `localities`, `fdic_data_as_of`, `no_callout_certs`.
 - `pipeline/`: `fetch.py` (paged API), `silver.py` (SCD2 dims, facts), `gold.py`, `checks.py` (9 checks),
-  `lake.py` (local folder or R2), `config.py` (metro counties, `NO_CALLOUT_CERTS`), `run.py`.
+  `lake.py` (local folder or R2), `config.py` (metro counties, `NO_CALLOUT_CERTS`, `MISCODED_PLACES`), `run.py`.
+- `.github/workflows/refresh.yml`: the weekly job (below). `.env.example`: the names `.env` and the secrets use.
 
 ## Run
 

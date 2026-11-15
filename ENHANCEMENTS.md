@@ -14,9 +14,13 @@ Roughly in the order picked on 2026-11-15.
    Check the bank's outside-activity policy first.
 7. **Pre-2000 mergers in Part III.** Merger/sale counts exist back to 1994 (still in silver); the site's event
    data starts in 2000 with the opening/closing records.
-8. **Bronze retention.** Bronze appends a full snapshot each run (19 MB measured on R2, ~1 GB/year). Keep the last N snapshots, or
-   append only changed rows.
+8. **Bronze retention.** Bronze appends a full snapshot each run (19 MB measured on R2, ~1 GB/year). Keep the
+   last N snapshots, or append only changed rows.
 9. **Keyboard list of branches.** Dots are focusable, but a plain list under the map (by city) would be easier
    to scan with a screen reader.
 10. **Show failed runs on the Pipeline page right away.** A failed check leaves `pipeline_status.json` at the
     last good run, so a failure only appears (in recent runs) after the next run that passes.
+11. **Move mis-filed metro events to the right city.** Three events sit in the metro but under the wrong
+    locality: Greenbrier's 2003 opening and 2005 closing (Chesapeake, filed under Norfolk) and a 2006
+    Forest Park closing (Hampton, filed under Virginia Beach). Metro totals are right; the city filter
+    isn't. A small list like `MISCODED_PLACES` would fix it.
