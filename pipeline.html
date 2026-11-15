@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bank Atlas · Pipeline</title>
+<meta name="description" content="Run report for Bank Atlas's bronze/silver/gold pipeline: tables, Delta versions and data checks.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Archivo+Narrow:wght@500;700&family=Red+Hat+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="pipeline.js"></script>
+</head>
+<body>
+<div class="wrap">
+
+<header class="form-head">
+  <div><div class="label">Project</div><a class="brand" href="./">BANK ATLAS</a></div>
+  <div class="cell-schedule"><div class="label">Run report</div><div class="head-title">Bronze → silver → gold</div></div>
+  <div class="cell-asof"><div class="label">FDIC files dated</div><div class="as-of" id="asof">…</div></div>
+  <nav class="nav" aria-label="Pages"><a href="./">Map</a><a href="pipeline.html" aria-current="page">Pipeline</a></nav>
+</header>
+
+<div class="status" id="status"></div>
+<div class="run-meta" id="run-meta"></div>
+
+<div class="pair">
+  <section class="part" aria-labelledby="t1">
+    <div class="part-head"><h2 id="t1">Part I. Tables</h2><span class="code">ROWS · DELTA VERSION</span></div>
+    <div class="part-body" id="tables"></div>
+  </section>
+  <section class="part" aria-labelledby="t2">
+    <div class="part-head"><h2 id="t2">Part II. Checks</h2><span class="code" id="check-count"></span></div>
+    <div class="part-body" id="checks"></div>
+  </section>
+</div>
+
+<section class="part" style="margin-top: 22px" aria-labelledby="t3">
+  <div class="part-head"><h2 id="t3">Part III. Recent runs</h2></div>
+  <div class="part-body" id="runs"></div>
+</section>
+
+<footer class="foot">
+  <span>The site's data files are only replaced when every check passes; a failed run leaves the last good files live.</span>
+  <a href="./">← Map</a>
+</footer>
+
+</div>
+</body>
+</html>
