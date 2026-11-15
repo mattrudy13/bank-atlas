@@ -1,10 +1,10 @@
 {
-  "run_id": "20261115T192200Z",
-  "started_at": "2026-11-15T19:22:00.160988+00:00",
-  "finished_at": "2026-11-15T19:22:01.509524+00:00",
-  "duration_seconds": 1.3,
+  "run_id": "20261115T193234Z",
+  "started_at": "2026-11-15T19:32:34.758935+00:00",
+  "finished_at": "2026-11-15T19:34:09.543253+00:00",
+  "duration_seconds": 94.8,
   "status": "passed",
-  "storage": "local",
+  "storage": "Cloudflare R2",
   "metro": {
     "cbsa": "47260",
     "name": "Virginia Beach-Chesapeake-Norfolk, VA-NC"
@@ -46,43 +46,43 @@
       "layer": "bronze",
       "table_name": "institutions",
       "row_count": 27835,
-      "total_rows": 55670,
-      "delta_version": 1
+      "total_rows": 27835,
+      "delta_version": 0
     },
     {
       "layer": "bronze",
       "table_name": "locations",
       "row_count": 78005,
-      "total_rows": 156010,
-      "delta_version": 1
+      "total_rows": 78005,
+      "delta_version": 0
     },
     {
       "layer": "bronze",
       "table_name": "history",
       "row_count": 2298,
-      "total_rows": 4596,
-      "delta_version": 1
+      "total_rows": 2298,
+      "delta_version": 0
     },
     {
       "layer": "bronze",
       "table_name": "sod",
       "row_count": 12016,
-      "total_rows": 24032,
-      "delta_version": 1
+      "total_rows": 12016,
+      "delta_version": 0
     },
     {
       "layer": "bronze",
       "table_name": "sod_fdic_totals",
       "row_count": 33,
-      "total_rows": 66,
-      "delta_version": 1
+      "total_rows": 33,
+      "delta_version": 0
     },
     {
       "layer": "silver",
       "table_name": "dim_metro_county",
       "row_count": 19,
       "total_rows": 19,
-      "delta_version": 3
+      "delta_version": 0
     },
     {
       "layer": "silver",
@@ -103,54 +103,54 @@
       "table_name": "fact_branch_event",
       "row_count": 2281,
       "total_rows": 2281,
-      "delta_version": 2
+      "delta_version": 1
     },
     {
       "layer": "silver",
       "table_name": "fact_branch_deposits_year",
       "row_count": 11989,
       "total_rows": 11989,
-      "delta_version": 2
+      "delta_version": 1
     },
     {
       "layer": "gold",
       "table_name": "branches_now",
       "row_count": 235,
       "total_rows": 235,
-      "delta_version": 3
+      "delta_version": 0
     },
     {
       "layer": "gold",
       "table_name": "branch_events_by_year",
       "row_count": 540,
       "total_rows": 540,
-      "delta_version": 3
+      "delta_version": 0
     },
     {
       "layer": "gold",
       "table_name": "branch_events",
       "row_count": 642,
       "total_rows": 642,
-      "delta_version": 2
+      "delta_version": 0
     },
     {
       "layer": "gold",
       "table_name": "deposit_share_by_year",
       "row_count": 5502,
       "total_rows": 5502,
-      "delta_version": 3
+      "delta_version": 0
     }
   ],
   "checks": [
     {
       "name": "row counts vs last run (bronze)",
       "passed": true,
-      "detail": "5 tables within \u00b110% of run 20261115T173616Z"
+      "detail": "first run; nothing to compare"
     },
     {
       "name": "row counts vs last run (silver, gold)",
       "passed": true,
-      "detail": "9 tables within \u00b110% of run 20261115T173616Z"
+      "detail": "first run; nothing to compare"
     },
     {
       "name": "unique keys",
@@ -193,30 +193,9 @@
   ],
   "recent_runs": [
     {
-      "run_id": "20261115T192200Z",
-      "started_at": "2026-11-15T19:22:00Z",
-      "duration_seconds": 1.3,
-      "status": "passed",
-      "failed_checks": []
-    },
-    {
-      "run_id": "20261115T173616Z",
-      "started_at": "2026-11-15T17:36:16Z",
-      "duration_seconds": 0.7,
-      "status": "passed",
-      "failed_checks": []
-    },
-    {
-      "run_id": "20261115T173553Z",
-      "started_at": "2026-11-15T17:35:53Z",
-      "duration_seconds": 13.9,
-      "status": "passed",
-      "failed_checks": []
-    },
-    {
-      "run_id": "20261115T170843Z",
-      "started_at": "2026-11-15T17:08:43Z",
-      "duration_seconds": 13.1,
+      "run_id": "20261115T193234Z",
+      "started_at": "2026-11-15T19:32:34Z",
+      "duration_seconds": 94.8,
       "status": "passed",
       "failed_checks": []
     }
