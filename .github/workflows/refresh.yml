@@ -1,0 +1,80 @@
+name: Refresh data
+
+# Weekly, Monday at 6 AM Eastern (11:00 UTC; 7 AM while daylight saving time is on).
+# Pulls FDIC's latest data into the R2 lake, runs the checks and commits site-data/.
+# A failed check exits non-zero before gold is written, so the site keeps the last
+# good data and the failed run emails the repo owner.
+on:
+  schedule:
+    - cron: "0 11 * * 1"
+  workflow_dispatch:
+    inputs:
+      housekeeping:
+        description: "Also compact and vacuum the lake (normally only the first Monday of the month)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# Delta on R2 has no lock service, so only one run may write to the lake at a time.
+concurrency:
+  group: bank-atlas-lake
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install pinned packages
+        run: pip install -r requirements.txt
+
+      # The tests use a temporary local lake; the R2 secrets are only given to the
+      # steps below, so neither the tests nor pip install can see them.
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Run the pipeline
+        env:
+          LAKE_URI: ${{ secrets.LAKE_URI }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: python -m pipeline.run
+
+      # OPTIMIZE + VACUUM once a month: the first Monday is the only one on day 1-7.
+      - name: Compact and vacuum the lake (first Monday of the month)
+        env:
+          LAKE_URI: ${{ secrets.LAKE_URI }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          EVENT: ${{ github.event_name }}
+          ASKED: ${{ inputs.housekeeping }}
+        run: |
+          if [ "$ASKED" = "true" ] || { [ "$EVENT" = "schedule" ] && [ "$(date -u +%-d)" -le 7 ]; }; then
+            python -m pipeline.run --housekeeping
+          else
+            echo "Not the first Monday of the month; skipped."
+          fi
+
+      - name: Commit site data if changed
+        run: |
+          if git diff --quiet -- site-data; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site-data
+          git commit -m "chore(data): refresh $(date -u +%Y-%m-%d)"
+          git pull --rebase
+          git push
