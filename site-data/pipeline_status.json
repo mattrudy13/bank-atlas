@@ -1,8 +1,8 @@
 {
-  "run_id": "20261116T205335Z",
-  "started_at": "2026-11-16T20:53:35.511341+00:00",
-  "finished_at": "2026-11-16T20:55:16.676048+00:00",
-  "duration_seconds": 101.2,
+  "run_id": "20261123T223034Z",
+  "started_at": "2026-11-23T22:30:34.465820+00:00",
+  "finished_at": "2026-11-23T22:31:45.704421+00:00",
+  "duration_seconds": 71.2,
   "status": "passed",
   "storage": "Cloudflare R2",
   "metro": {
@@ -12,21 +12,21 @@
   "fdic_sources": [
     {
       "endpoint": "institutions",
-      "index_name": "institutions_20261113100007",
-      "created_at": "2026-11-13T12:55:01Z",
-      "rows": 27835
+      "index_name": "institutions_20261120100008",
+      "created_at": "2026-11-20T12:56:44Z",
+      "rows": 27838
     },
     {
       "endpoint": "locations",
-      "index_name": "locations_20261113100007",
-      "created_at": "2026-11-13T12:44:09Z",
-      "rows": 78005
+      "index_name": "locations_20261120100008",
+      "created_at": "2026-11-20T12:44:45Z",
+      "rows": 77997
     },
     {
       "endpoint": "history",
-      "index_name": "history_20261113100007",
-      "created_at": "2026-11-13T11:21:08Z",
-      "rows": 2298
+      "index_name": "history_20261120100008",
+      "created_at": "2026-11-20T11:21:07Z",
+      "rows": 2297
     },
     {
       "endpoint": "sod",
@@ -45,65 +45,65 @@
     {
       "layer": "bronze",
       "table_name": "institutions",
-      "row_count": 27835,
-      "total_rows": 83505,
-      "delta_version": 2
+      "row_count": 27838,
+      "total_rows": 111343,
+      "delta_version": 3
     },
     {
       "layer": "bronze",
       "table_name": "locations",
-      "row_count": 78005,
-      "total_rows": 234015,
-      "delta_version": 2
+      "row_count": 77997,
+      "total_rows": 312012,
+      "delta_version": 3
     },
     {
       "layer": "bronze",
       "table_name": "history",
-      "row_count": 2298,
-      "total_rows": 6894,
-      "delta_version": 2
+      "row_count": 2297,
+      "total_rows": 9191,
+      "delta_version": 3
     },
     {
       "layer": "bronze",
       "table_name": "sod",
       "row_count": 12016,
-      "total_rows": 36048,
-      "delta_version": 2
+      "total_rows": 48064,
+      "delta_version": 3
     },
     {
       "layer": "bronze",
       "table_name": "sod_fdic_totals",
       "row_count": 33,
-      "total_rows": 99,
-      "delta_version": 2
+      "total_rows": 132,
+      "delta_version": 3
     },
     {
       "layer": "silver",
       "table_name": "dim_metro_county",
       "row_count": 19,
       "total_rows": 19,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "silver",
       "table_name": "dim_bank",
-      "row_count": 27835,
-      "total_rows": 27835,
-      "delta_version": 1
+      "row_count": 27838,
+      "total_rows": 27851,
+      "delta_version": 2
     },
     {
       "layer": "silver",
       "table_name": "dim_branch",
-      "row_count": 78005,
-      "total_rows": 78005,
-      "delta_version": 1
+      "row_count": 77997,
+      "total_rows": 78066,
+      "delta_version": 2
     },
     {
       "layer": "silver",
       "table_name": "fact_branch_event",
-      "row_count": 2281,
-      "total_rows": 2281,
-      "delta_version": 1
+      "row_count": 2280,
+      "total_rows": 2280,
+      "delta_version": 2
     },
     {
       "layer": "silver",
@@ -117,40 +117,40 @@
       "table_name": "branches_now",
       "row_count": 235,
       "total_rows": 235,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "gold",
       "table_name": "branch_events_by_year",
       "row_count": 540,
       "total_rows": 540,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "gold",
       "table_name": "branch_events",
       "row_count": 642,
       "total_rows": 642,
-      "delta_version": 2
+      "delta_version": 3
     },
     {
       "layer": "gold",
       "table_name": "deposit_share_by_year",
       "row_count": 5502,
       "total_rows": 5502,
-      "delta_version": 2
+      "delta_version": 3
     }
   ],
   "checks": [
     {
       "name": "row counts vs last run (bronze)",
       "passed": true,
-      "detail": "5 tables within \u00b110% of run 20261115T193654Z"
+      "detail": "5 tables within \u00b110% of run 20261116T205335Z"
     },
     {
       "name": "row counts vs last run (silver, gold)",
       "passed": true,
-      "detail": "9 tables within \u00b110% of run 20261115T193654Z"
+      "detail": "9 tables within \u00b110% of run 20261116T205335Z"
     },
     {
       "name": "unique keys",
@@ -165,7 +165,7 @@
     {
       "name": "no future dates",
       "passed": true,
-      "detail": "nothing after 2026-11-16"
+      "detail": "nothing after 2026-11-23"
     },
     {
       "name": "metro deposits match FDIC totals",
@@ -192,6 +192,13 @@
     35095
   ],
   "recent_runs": [
+    {
+      "run_id": "20261123T223034Z",
+      "started_at": "2026-11-23T22:30:34Z",
+      "duration_seconds": 71.2,
+      "status": "passed",
+      "failed_checks": []
+    },
     {
       "run_id": "20261116T205335Z",
       "started_at": "2026-11-16T20:53:35Z",
